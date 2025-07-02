@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> 🌟 Stay up to date at [opendrivelab.com](https://opendrivelab.com/#news)!
+
 # Think Twice before Driving: Towards Scalable Decoders for End-to-End Autonomous Driving
 
 - A SOTA Decoder for End-to-End Autonomous Driving under BEV
