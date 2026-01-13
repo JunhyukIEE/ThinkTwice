@@ -146,12 +146,12 @@ class ROACHAgent(autonomous_agent.AutonomousAgent):
                 (self.save_path / 'seg_right').mkdir(parents=True, exist_ok=True)
                 (self.save_path / 'seg_back').mkdir(parents=True, exist_ok=True)
 
-                (self.save_path / 'depth_front').mkdir(parents=True, exist_ok=True)
-                (self.save_path / 'depth_left').mkdir(parents=True, exist_ok=True)
-                (self.save_path / 'depth_right').mkdir(parents=True, exist_ok=True)
-                (self.save_path / 'depth_back').mkdir(parents=True, exist_ok=True)
+                # (self.save_path / 'depth_front').mkdir(parents=True, exist_ok=True)
+                # (self.save_path / 'depth_left').mkdir(parents=True, exist_ok=True)
+                # (self.save_path / 'depth_right').mkdir(parents=True, exist_ok=True)
+                # (self.save_path / 'depth_back').mkdir(parents=True, exist_ok=True)
 
-                (self.save_path / 'lidar').mkdir(parents=True, exist_ok=True)
+                # (self.save_path / 'lidar').mkdir(parents=True, exist_ok=True)
 
                 (self.save_path / 'measurements').mkdir()
                 (self.save_path / 'supervision').mkdir()
@@ -580,16 +580,21 @@ class ROACHAgent(autonomous_agent.AutonomousAgent):
             Image.fromarray(tick_data['seg_left']).save(self.save_path / 'seg_left' / ('%04d.png' % frame))
             Image.fromarray(tick_data['seg_right']).save(self.save_path / 'seg_right' / ('%04d.png' % frame))
             Image.fromarray(tick_data['seg_back']).save(self.save_path / 'seg_back' / ('%04d.png' % frame))
-            Image.fromarray(tick_data['depth_front']).save(self.save_path / 'depth_front' / ('%04d.png' % frame))
-            Image.fromarray(tick_data['depth_left']).save(self.save_path / 'depth_left' / ('%04d.png' % frame))
-            Image.fromarray(tick_data['depth_right']).save(self.save_path / 'depth_right' / ('%04d.png' % frame))
-            Image.fromarray(tick_data['depth_back']).save(self.save_path / 'depth_back' / ('%04d.png' % frame))
+            # Image.fromarray(tick_data['depth_front']).save(self.save_path / 'depth_front' / ('%04d.png' % frame))
+            # Image.fromarray(tick_data['depth_left']).save(self.save_path / 'depth_left' / ('%04d.png' % frame))
+            # Image.fromarray(tick_data['depth_right']).save(self.save_path / 'depth_right' / ('%04d.png' % frame))
+            # Image.fromarray(tick_data['depth_back']).save(self.save_path / 'depth_back' / ('%04d.png' % frame))
             Image.fromarray(render_img).save(self.save_path / 'bev' / ('%04d.png' % frame))
             np.save(self.save_path / 'bev_seg_label' / ('%04d.npy' % frame), tick_data['bev_seg_label'], allow_pickle=True)
             with open(self.save_path / 'supervision' / ('%04d.npy' % frame), 'wb') as f:
                 np.save(f, supervision_dict)
         else:
-            for key_name in ["rgb_front", "rgb_left", "rgb_right", "rgb_back", "seg_front", "seg_left", "seg_right", "seg_back", "depth_front", "depth_left", "depth_right", "depth_back", "topdown"]:
+            for key_name in [
+                "rgb_front", "rgb_left", "rgb_right", "rgb_back",
+                "seg_front", "seg_left", "seg_right", "seg_back",
+                # "depth_front", "depth_left", "depth_right", "depth_back",
+                "topdown",
+            ]:
                 self.client.put(os.path.join(self.save_path, key_name, '%04d.png' % frame), tick_data[key_name].tostring())
             self.client.put(os.path.join(self.save_path, "bev_seg_label", '%04d.npy' % frame), tick_data['bev_seg_label'].tostring())
             self.client.put(os.path.join(self.save_path, "supervision", '%04d.npy' % frame), array_to_bytes(supervision_dict))
@@ -636,11 +641,11 @@ class ROACHAgent(autonomous_agent.AutonomousAgent):
             json.dump(data, outfile, indent=4)
             outfile.close()
 
-            np.save(self.save_path / 'lidar' / ('%04d.npy' % frame), saved_lidar.astype(np.float32), allow_pickle=True)
+            # np.save(self.save_path / 'lidar' / ('%04d.npy' % frame), saved_lidar.astype(np.float32), allow_pickle=True)
         else:
             self.client.put(os.path.join(self.save_path, '3d_bbs', '%04d.json' % frame), json.dumps(actor_lis, default=np_encoder).encode('utf-8'))
             self.client.put(os.path.join(self.save_path, 'measurements', '%04d.json' % frame), json.dumps(data, default=np_encoder).encode('utf-8'))
-            self.client.put(os.path.join(self.save_path, 'lidar', '%04d.npy' % frame), array_to_bytes(saved_lidar))
+            # self.client.put(os.path.join(self.save_path, 'lidar', '%04d.npy' % frame), array_to_bytes(saved_lidar))
 
 
     def get_target_gps(self, gps, compass):
@@ -897,4 +902,3 @@ class ROACHAgent(autonomous_agent.AutonomousAgent):
         matrix[2, 1] = -c_p * s_r
         matrix[2, 2] = c_p * c_r
         return matrix
-
