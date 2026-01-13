@@ -110,12 +110,6 @@ class StatisticsManager(object):
             # the element already exists and therefore we update it
             self._registry_route_records[index] = route_record
         else:
-            if index > len(self._registry_route_records):
-                for missing_index in range(len(self._registry_route_records), index):
-                    missing_record = RouteRecord()
-                    missing_record.index = missing_index
-                    missing_record.status = 'Missing'
-                    self._registry_route_records.append(missing_record)
             self._registry_route_records.append(route_record)
 
     def set_scenario(self, scenario):
