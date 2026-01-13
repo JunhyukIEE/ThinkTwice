@@ -9,6 +9,7 @@ import cv2
 from collections import deque
 import random
 
+import pytorch_rtx4090_patch
 import torch
 import numpy as np
 from PIL import Image
