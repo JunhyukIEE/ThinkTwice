@@ -110,6 +110,12 @@ class StatisticsManager(object):
             # the element already exists and therefore we update it
             self._registry_route_records[index] = route_record
         else:
+            if index > len(self._registry_route_records):
+                for missing_index in range(len(self._registry_route_records), index):
+                    missing_record = RouteRecord()
+                    missing_record.index = missing_index
+                    missing_record.status = 'Missing'
+                    self._registry_route_records.append(missing_record)
             self._registry_route_records.append(route_record)
 
     def set_scenario(self, scenario):
@@ -248,8 +254,12 @@ class StatisticsManager(object):
         stats_dict = route_record.__dict__
         record_list = data['_checkpoint']['records']
         if index > len(record_list):
-            print('Error! No enough entries in the list')
-            sys.exit(-1)
+            print('Warning: checkpoint records list shorter than index; padding missing entries')
+            for missing_index in range(len(record_list), index):
+                missing_record = RouteRecord().__dict__
+                missing_record['index'] = missing_index
+                missing_record['status'] = 'Missing'
+                record_list.append(missing_record)
         elif index == len(record_list):
             record_list.append(stats_dict)
         else:
